@@ -3,8 +3,8 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const CronJob = require('cron').CronJob;
-var multer = require('multer'); // v1.0.5
-var upload = multer(); // for parsing multipart/form-data
+const multer = require('multer'); // v1.0.5
+const upload = multer(); // for parsing multipart/form-data
 
 app.use(express.static('public'));
 
@@ -70,9 +70,9 @@ app.post('/devicelist/', upload.array(), authorityCheck, (req, res, next) => {
       port: Number(req.body.port),
       timeout: Math.floor(Date.now()/1000) + defaultTimeout
     }];
-    res.status(201).send('Your device is succesfully added to the list.');
+    return res.status(201).send('Your device is succesfully added to the list.');
   } else {
-    res.status(400).send('Your address is already on the list, Use PUT/POST method with your address.');
+    return res.status(400).send('Your address is already on the list, Use PUT/POST method with your address.');
   }
 });
 
@@ -80,22 +80,32 @@ app.post('/devicelist/', upload.array(), authorityCheck, (req, res, next) => {
 app.post('/devicelist/:address', upload.array(), authorityCheck, (req, res, next) => {
   const address = String(req.body.address);
   if (!deviceMap.hasOwnProperty(address)) {
-    return res.status(404).send('This address is not valid. Try to POST your address.');
+    res.status(404).send('This address is not valid. Try to POST your address.');
+  } else {
+    let count = 0;
+    deviceMap[address].forEach((object) => {
+      if(object.ip === req.ip){
+        res.status(400).send('Device\'s IP address is already on the list. Use PUT method instead.')
+        count += 1;
+      }
+    })
+    if(count === 0){
+      const newObject = {
+        ip: req.ip,
+        port: Number(req.body.port),
+        timeout: Math.floor(Date.now()/1000) + defaultTimeout
+      };
+      deviceMap[address].push(newObject);
+      res.status(201).send(newObject);
+    }  
   }
-  const newObject = {
-    ip: req.ip,
-    port: Number(req.body.port),
-    timeout: Math.floor(Date.now()/1000) + defaultTimeout
-  };
-  deviceMap[address].push(newObject);
-  res.status(201).send(newObject);
 });
 
 // Update the list
 app.put('/devicelist/:address', upload.array(), authorityCheck, (req, res, next) => {
   const address = String(req.params.address);
   if (!deviceMap.hasOwnProperty(address)) {
-    return res.status(404).send('This address is not valid. Try to POST your address.');
+    res.status(404).send('This address is not valid. Try to POST your address.');
   }
   deviceMap[address].forEach(function(object){
     if(object.ip === req.ip){
@@ -115,10 +125,11 @@ app.put('/devicelist/:address', upload.array(), authorityCheck, (req, res, next)
 app.delete('/devicelist/:address', upload.array(), (req, res, next) => {
   const address = String(req.body.address);
   if (!deviceMap.hasOwnProperty(address)) {
-    return res.status(404).send('This address is not valid. Try to POST your address.');
+    res.status(404).send('This address is not valid. Try to POST your address.');
+  } else {
+    delete deviceMap[address];
+    res.status(204).send('Your address is successfully deleted from the list.');
   }
-  delete deviceMap[address];
-  res.status(204).send('Your address is successfully deleted from the list.');
 });
 
 // Start the server
