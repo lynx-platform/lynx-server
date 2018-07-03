@@ -5,7 +5,6 @@ const mObject = {
   port: 8910
 }
 
-
 request.post({
   url: 'http://127.0.0.1:8910/devicelist/',
   form: mObject
@@ -30,6 +29,13 @@ request.put({
 }, function(error, response, body){
   console.log(body);
 });
+
+request.delete({
+  uri: 'http://127.0.0.1:8910/devicelist/0x0011001011010131'}, (err, res, body) => {
+    console.log('error: ', err);
+    console.log('statusCode: ', res && res.statusCode);
+    console.log('body: ', body);
+})
 
 request.get('http://127.0.0.1:8910/devicelist', (err, res, body) => {
   console.log('error: ', err);

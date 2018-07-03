@@ -97,7 +97,7 @@ app.post('/devicelist/:address', upload.array(), authorityCheck, (req, res, next
       };
       deviceMap[address].push(newObject);
       res.status(201).send(newObject);
-    }  
+    }
   }
 });
 
@@ -123,7 +123,7 @@ app.put('/devicelist/:address', upload.array(), authorityCheck, (req, res, next)
 
 // Delete an address from the list.
 app.delete('/devicelist/:address', upload.array(), (req, res, next) => {
-  const address = String(req.body.address);
+  const address = String(req.params.address);
   if (!deviceMap.hasOwnProperty(address)) {
     res.status(404).send('This address is not valid. Try to POST your address.');
   } else {
