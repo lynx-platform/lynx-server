@@ -1,0 +1,17 @@
+{
+  "name": "kctserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cron": "^1.3.0",
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "underscore": "^1.9.1"
+  }
+}
