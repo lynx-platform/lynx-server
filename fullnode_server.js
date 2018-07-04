@@ -17,7 +17,7 @@ const defaultTimeout = 60;
 
 const deviceMap = {
   '8913': [{
-    ip: '::ffff:147.46.123.249',
+    ip: '147.46.123.249',
     port: 8913,
     timeout: 15305137544
   }],
@@ -73,7 +73,7 @@ app.post('/devicelist/', upload.array(), authorityCheck, (req, res, next) => {
   const address = String(req.body.address);
   if (!deviceMap.hasOwnProperty(address)) {
     deviceMap[address] = [{
-      ip: req.ip,
+      ip: req.ip.substr(7),
       port: Number(req.body.port),
       timeout: Math.floor(Date.now()/1000) + defaultTimeout
     }];
@@ -91,14 +91,14 @@ app.post('/devicelist/:address', upload.array(), authorityCheck, (req, res, next
   } else {
     let count = 0;
     deviceMap[address].forEach((object) => {
-      if(object.ip === req.ip){
+      if(object.ip === req.ip.substr(7)){
         res.status(400).send('Device\'s IP address is already on the list. Use PUT method instead.')
         count += 1;
       }
     })
     if(count === 0){
       const newObject = {
-        ip: req.ip,
+        ip: req.ip.substr(7),
         port: Number(req.body.port),
         timeout: Math.floor(Date.now()/1000) + defaultTimeout
       };
@@ -130,7 +130,7 @@ app.put('/devicelist/:address', upload.array(), authorityCheck, (req, res, next)
     res.status(404).send('This address is not valid. Try to POST your address.');
   }
   deviceMap[address].forEach(function(object){
-    if(object.ip === req.ip){
+    if(object.ip === req.ip.substr(7)){
       if(object.port === Number(req.body.port)){
         object.timeout = Math.floor(Date.now()/1000) + defaultTimeout
         res.send(deviceMap);
