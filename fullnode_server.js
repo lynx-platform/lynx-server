@@ -111,7 +111,7 @@ app.post('/devicelist/:address', upload.array(), authorityCheck, (req, res, next
 function download(uri, filename, callback){
   request.head(uri, function(err, res, body){
     console.log('content-type: ', res.headers['content-type']);
-    console.log('content-length: ', res.headers['content-lentgh']);
+    console.log('content-length: ', res.headers['content-length']);
 
     request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
   });
@@ -119,16 +119,9 @@ function download(uri, filename, callback){
 
 // Receive input data
 app.post('/input/', upload.array(), authorityCheck, (req, res, next) => {
-  download(req.body.uri, 'test', () => {console.log(req.body.uri)}); // TODO : Need to decide how to name input file.
+  download(req.body.uri, './input/test.jpg', () => {console.log(req.body.uri)}); // TODO : Need to decide how to name input file.
   res.status(201).send();
 });
-
-// Receive result data
-app.post('/result/', upload.array(), authorityCheck, (req, res, next) => {
-  download(req.body.uri, 'test_result', () => {console.log('Full node received your result...')}); // TODO : Need to decide how to name result file.
-  res.status(201).send();
-});
-
 
 // Update the list
 app.put('/devicelist/:address', upload.array(), authorityCheck, (req, res, next) => {
