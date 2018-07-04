@@ -17,7 +17,9 @@ const defaultTimeout = 60;
 
 const deviceMap = {
   '8913': [
-
+    ip: '::ffff:147.46.123.249',
+    port: 8913,
+    timeout: 15305137544
   ],
   '0x0011001011010101': [{
     ip: '124.123.12.1',
