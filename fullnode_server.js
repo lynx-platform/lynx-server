@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5511;
 const defaultTimeout = 60;
 
 const deviceMap = {
-  '0': [
+  '8913': [
 
   ],
   '0x0011001011010101': [{
@@ -57,7 +57,7 @@ const authorityCheck = (req, res, next) => {
 }
 
 // start timeout check for the list.
-timeoutCheck.start();
+// timeoutCheck.start();
 
 // Get all edge devices List.
 app.get('/devicelist/', authorityCheck, (req, res, next) => {
