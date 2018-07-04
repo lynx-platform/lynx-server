@@ -16,11 +16,11 @@ const PORT = process.env.PORT || 5511;
 const defaultTimeout = 60;
 
 const deviceMap = {
-  '8913': [
+  '8913': [{
     ip: '::ffff:147.46.123.249',
     port: 8913,
     timeout: 15305137544
-  ],
+  }],
   '0x0011001011010101': [{
     ip: '124.123.12.1',
     port: 8910,
@@ -108,24 +108,24 @@ app.post('/devicelist/:address', upload.array(), authorityCheck, (req, res, next
   }
 });
 
-const download = (uri, filename) => {
-  request.head(uri, (err, res, body) => {
+function download(uri, filename, callback){
+  request.head(uri, function(err, res, body){
     console.log('content-type: ', res.headers['content-type']);
     console.log('content-length: ', res.headers['content-lentgh']);
 
-    request(uri).pipe(fs.createWriteStream(filename));
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
   });
 }
 
 // Receive input data
 app.post('/input/', upload.array(), authorityCheck, (req, res, next) => {
-  download(req.body.uri, 'test'); // TODO : Need to decide how to name input file.
+  download(req.body.uri, 'test', () => {console.log('Full node received your input...')}); // TODO : Need to decide how to name input file.
   res.status(201).send();
 });
 
 // Receive result data
-app.post('/result/', authorityCheck, (req, res, next) => {
-  download(req.body.uri, 'test_result'); // TODO : Need to decide how to name result file.
+app.post('/result/', upload.array(), authorityCheck, (req, res, next) => {
+  download(req.body.uri, 'test_result', () => {console.log('Full node received your result...')}); // TODO : Need to decide how to name result file.
   res.status(201).send();
 });
 
