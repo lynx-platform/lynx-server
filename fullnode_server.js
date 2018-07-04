@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const CronJob = require('cron').CronJob;
 const multer = require('multer'); // v1.0.5
 const upload = multer(); // for parsing multipart/form-data
+const fs = require('fs');
+const request = require('request');
 
 app.use(express.static('public'));
 
@@ -100,6 +102,28 @@ app.post('/devicelist/:address', upload.array(), authorityCheck, (req, res, next
     }
   }
 });
+
+const download = (uri, filename) => {
+  request.head(uri, (err, res, body) => {
+    console.log('content-type: ', res.headers['content-type']);
+    console.log('content-length: ', res.headers['content-lentgh']);
+
+    request(uri).pipe(fs.createWriteStream(filename));
+  });
+}
+
+// Receive input data
+app.post('/input/', upload.array(), authorityCheck, (req, res, next) => {
+  download(req.body.uri, 'test'); // TODO : Need to decide how to name input file.
+  res.status(201).send();
+});
+
+// Receive result data
+app.post('/result/', authorityCheck, (req, res, next) => {
+  download(req.body.uri, 'test_result'); // TODO : Need to decide how to name result file.
+  res.status(201).send();
+});
+
 
 // Update the list
 app.put('/devicelist/:address', upload.array(), authorityCheck, (req, res, next) => {
