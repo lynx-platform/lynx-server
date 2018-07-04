@@ -119,7 +119,7 @@ function download(uri, filename, callback){
 
 // Receive input data
 app.post('/input/', upload.array(), authorityCheck, (req, res, next) => {
-  download(req.body.uri, 'test', () => {console.log('Full node received your input...')}); // TODO : Need to decide how to name input file.
+  download(req.body.uri, 'test', () => {console.log(req.body.uri)}); // TODO : Need to decide how to name input file.
   res.status(201).send();
 });
 
