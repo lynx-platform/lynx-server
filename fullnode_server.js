@@ -10,12 +10,15 @@ const request = require('request');
 
 app.use(express.static('public'));
 
-const PORT = process.env.PORT || 8910;
+const PORT = process.env.PORT || 5511;
 
 // sec
 const defaultTimeout = 60;
 
 const deviceMap = {
+  '0': [
+
+  ],
   '0x0011001011010101': [{
     ip: '124.123.12.1',
     port: 8910,
@@ -135,7 +138,7 @@ app.put('/devicelist/:address', upload.array(), authorityCheck, (req, res, next)
     if(object.ip === req.ip){
       if(object.port === Number(req.body.port)){
         object.timeout = Math.floor(Date.now()/1000) + defaultTimeout
-        res.send('List updated.');
+        res.send(deviceMap);
       } else {
         res.status(404).send('This port number is not on the list.');
       }
